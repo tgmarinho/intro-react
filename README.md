@@ -1,165 +1,201 @@
-# intro-react
+## Aula 2 - Configurando estrutura
 
-## Introdução ao React
+Criar um pasta chamada `intro-react` no seu workspace, e executar o comando `yarn init -y` para criar um `package.json` na raiz do projeto.
 
-## Aula 1 - Conceitos do React
+Criar uma pasta `src` que conterá o código javascript da aplicação frontend.
 
-Vamos entender os primeiros conceitos de React!
+Criar um arquivo `index.js` na raiz do `src` que será o ponto de entrada da aplicação frontend.
 
-### O que é React?
+### Instalando as libs do webpack, babel, react e react-dom
 
-- É uma biblioteca para construção de interfaces;
-- Foi construída com Javascript;
-- Pode ser utilizado em interface de realidade virtual, mobile, web, isso é toda interface do usuário que rode com Javascript;
-- Utilizado para construção de SPA (Single Page Applications), conceito de 2011 que veio junto com Angular. Agora com as SPA, o backend retorna JSON e o frontend controla as rotas e o consume do JSON. É uma página só, a página não recarrega o navegador, não faz refresh.
-- Podemos chamar de framework?
-	- O React se tornou um ecossistema, para mobile, web, deskop, ai sim é um framework.
-- Tudo fica dentro do Javascript: o CSS, Imagens, fica no Javascript
-- React / ReactJS / React Native
-	- React = Biblioteca de construção de interfaces, que é usado tanto na web com React quanto no mobile com React Native
-	- ReactJS = Comportamento do React no navegador, integração com React DOM
-	- React Native = É a junção do React com a construção de interfaces natives do Android e iOS.
-
-
-Hello React:
+Em seguinda instalar as bibliotecas como depedência de desenvolvimento: 
 
 ```
-import React from 'react';
+yarn add @babel/core @babel/preset-env @babel/preset-react webpack webpack-cli -D
+```
 
-import './button.css';
-import icon from './button.png';
+São libs que funcionam a integração do[webpack](https://webpack.js.org/) com [babeljs](https://babeljs.io/) e [reactjs](https://pt-br.reactjs.org/).
 
-function Button() {
- return (
-	 <button>
-		 <img src={icon} />
-	 <button>
- );
+Instalar as bibliotecas:
+
+```
+yarn add react react-dom
+```
+
+### Configurando o Babel
+
+Depois criar um arquivo na raiz do projeto: `babel-config.js` para fazer as configurações do babel.
+
+```
+module.exports = {
+  presets: [
+    "@babel/preset-env",
+    '@babel/preset-react'
+  ]
 }
 ```
+`@babel/preset-env` = alterar as funcionalidades que o browser não entente para uma versão que ele entenda, por exemplo, import/export, arrow functions, classes, do javascript moderno que o browser ainda não entende. Essa lib altera para versão antiga do JS ES5.
 
-Isso é um código escrito com React.
+`@babel/preset-react` = altera as funcionalidades do React que o browser não entende, por exemplo os JSX é convertido para arquivo JS.
 
-Sempre tem que importar a lib React nos componentes da página.
 
-Nesse código React  temos Javascript, CSS e Imagem.
+### Configurando o Webpack
 
-JS: a funtion
-CSS : o arquivo button.css
-IMagem: button.png
+Criar na raiz do projeto um arquivo: `webpack.config.js`
 
-Que lê tudo isso é o webpack e consegue imbutir em um código javascript nativo e com o babel faz a tradução do código mais moderno para a versão que o navegador entende. 
+`entry`: é o arquivo de entrada da aplicação.
 
-Esse código não fica menos performático porque o webpack + babel fazem a otimização.
+`path.resolve(__dirname, "src", "index.js")`: Essa propriedade do `nodejs`, `resolve` as questões das barras para navegar entre diretórios, no windows é de um jeito no linux é de outro. então a função `resolve` trata isso pra gente.
 
-Esse código na verdade é um .JSX React com Javascript. Inclusive os elementos html no arquivo são na verdade do React.
+`output`: é o local onde vai ser lançado o código transpirado pelo webpack, que é o que será colocado em produção e que o navegador entende. Ela recebe o path que é o local do arquivo e o filename  que é o nome do arquivo.
 
-#### Vantagens
-
-- Organização do código
-	- Componentização: Tudo é componente, e outros frameworks (angular, vue) copiaram a mesma solução. Pequenos trechos de códigos que serão reaproveitados, a divisão do componente acontece quando dividismos a lógica. Podemos entender um componente como uma lógica (JS), estilização(CSS) e estruturização(HTML), juntos formam um Componente que podem ser reutilizados ou simplesmesnte removido e a página funciona normamente.
-	- Divisão de responsabilidades:
-		- Back-end: regra de negócio
-		- front-ent: interface
-- Uma API e múltiplos clientes:
-	- Podemos ter um backend com uma API REST, e um projeto web e outro mobile para consumir o mesmo backend. 
-- Programação declarativa 
-	- Programação imperativa: o programador descreve para o computador cada passo que se deve fazer.
-	- Programação declarativa: Você informa qual resultado que você espara e ela se comporta de acordo com estado que a gente passa.
-
-#### JSX
-	- Escrever HTML dentro do Javascript;
-	- Com react podemos criar nosso próprios elementos;
-	
-	Antes do JSX:
-```
-// ANTES
-function Button() {
- return React.createElement(
-	 'button',
-	 { type: button },
-	 React.createElement(
-		 'span',
-	 { class: 'icon' }
-	 )
-    )
-}
-<button type="button">
- <span class="icon"/><span>
-</button>
-```
-
-Muito ruim, verboso...
-
-E agora com JSX
-```
-// Com JSX
-function Button() {
- return (
-	 <button type="button">
-		<span class="icon"></icon>
-	 <button>
- );
-}
-```
-
-Agora posso criar uma função Header e retornar um Button que contém toda a estrutura de um button. E o Button pode ser reutilizado onde quisermos, assim como o Header.
-```
-// Nossos próprios elementos 
-// (componentes)
-
-function Header() {
- return <Button />
-```
-
-Tanto o Header e Button são componentes
-
-#### Programação Imperativa x Programação Declarativa
-
-Programação imperativa você dá os passos e as condições para algo acontencer.
-Programação declarativa você dá as condições para algo acontecer.
-
-##### IMPERATIVA
+Podemos criar uma pasta `public` na raiz do projeto para receber o `bundle`.
 
 ```
-const notificacoes = 0;
-
-function montaBadge(num) {
- if (notificacoes === 0 !& num > 0) {
- // Adiciona badge
- // container.appendChild(badge)..
- }
-
- if (notificacoes !== 0 !& num > 0) {
- // Apenas muda o número
- // badge.innerHTML = num...
- }
-
- if (notificacoes !== 0 !& num === 0) {
- // Remove badge
- // container.removeChild(badge)
- }
-}
+ output: {
+    path: path.resolve(__dirname, "public"),
+    filename:  'bundle.js'
+  }
 ```
 
-##### DECLARATIVA
+Depois vamos configurar o module no webpack que armazena as regras (rules):
 
 ```
-!/ Não comparamos com o estado anterior
-function Badge({ num }) {
- return (
-	 <div id="container">
-	   { num > 0 !& <div id="badge">{num}</div>}
-	   <span class="icon"></span>
-	 </div>
- );
-} 
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader"
+        }
+      }
+    ]
+  }
 ```
 
-### Babel / Webpack
-- O browser não entende o código React com imagens, css;
-- O babel converte o código JS de uma forma que o browser entende;
-- O webpack possui várias funções:
-	- Ele cria o bundle, arquivo como todo o código da aplicação;
-	- Ensina o Javascript como importar arquivos CSS, imagens e etc através dos loaders;
-	- Live reload com webpack dev server: Toda vez que altera um código o browser atualiza com a nova versão do bundle.
+Declaramos uma regra por enquanto, para que test o arquivo, tem que ser .js ou seja um arquivo javascript na nossa aplicação, excluindo todo javascript que estiver na pasta node_modules por que elá já está com os arquivos transpilados, isso é responsabilidade do desenvolvedor da biblioteca. e Declaramos que iremos usar (use) um loader chamado babel-loader, o babel que lida com arquivos Javascript, tem outros loaders para lidar com imagem, css, etc, por enquanto vamos utilizar só esse,  e para funcionar vamos instalar como dependência de desenvolvedor:
+
+```
+yarn add babel-loader -D
+```
+
+E agora para testar a configuração, adicionamos um script no package.json para fazer o build da aplicação. Build é o ato do webpack transpilar o nosso projeto e colocar tudo no bundle.js na pasta public conforme configurandos mo webpack.config.js.
+
+```
+"scripts": {
+    "build": "webpack --mode development"
+  },
+```
+
+e agora só executar: 
+
+```
+yarn build
+```
+
+E o arquivo bundle.js será gerado, observe que no final temos o mesmo código escrito em javascript mais antigo que o browser suporta: 
+```
+var soma = function soma(a, b) {
+  return a + b;
+};
+alert(soma(1, 3)); 
+```
+
+O código anterior, não se preocupe, mas é o que faz o import/export funcionar no navegador. Thanks webpack, babel! 
+
+E agora vamos testar o bundle.js no navegador.
+
+Criando o arquivo `index.html` na pasta `public`.
+
+```
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>React JS</title>
+</head>
+
+<body>
+    <h1>Hello World</h1>
+
+    <script src="./bundle.js"></script>
+</body>
+
+</html>
+```
+
+e acessando o endereço no navegador:
+
+```
+/Users/SEU_USER_AQUI/Developer/workspace/intro-react/public/index.html
+```
+
+Recebemos um alerta com o valor da soma e é exibido um h1 com Hell World grandão.
+
+### Live Reload
+
+Para funcionar o live reload precisamos de uma biblioteca de desenvolvimento e algumas configurações:
+
+```
+yarn add webpack-dev-server -D
+```
+
+E no webpack.config.js, adicionamos: 
+
+```
+devServer: {
+	contentBase: path.resolve(__dirname, "public")
+},
+```
+
+E no package.json adicionamos mais um script: 
+
+```
+"scripts": {
+   "build":  "webpack --mode development",	
+   "dev": "webpack-dev-server --mode development"
+  },
+```
+
+e executamos
+```
+yarn dev
+```
+
+E agora podemos ir no navegador e digitar na barra de endereco:
+
+```
+[http://localhost:8080/](http://localhost:8080/)
+```
+E vamos ter o projeto funcionando e se alteramos o código ele é atualizado e exibido na tela. Só alterar o Javascript novamente.
+
+Um detalhe que 
+
+```
+"scripts": {
+   "build":  "webpack --mode development",	
+   "dev": "webpack-dev-server --mode development"
+  },
+```
+
+esse --mode development gera um bundle que ainda dá para ler, se a gente muda essa propriedade para --mode production ele gera um bundle impossível de ler, deixando em uma única linha, minificado, de forma que o computador processa mais rápido, otimizando a performance.
+
+```
+"scripts": {
+   "build":  "webpack --mode production",	
+   "dev": "webpack-dev-server --mode development"
+  },
+```
+ Resultado: 
+ ```
+ !function(e){var t={};function  r(n){if(t[n])return t[n].exports;var o=t[n]={i:n,l:!1,exports:{}};return e[n].call(o.exports,o,o.exports,r),o.l=!0,o.exports}r.m=e,r.c=t,r.d=function(e,t,n){r.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:n})},r.r=function(e){"undefined"!=typeof  Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},r.t=function(e,t){if(1&t&&(e=r(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var n=Object.create(null);if(r.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var o in e)r.d(n,o,function(t){return e[t]}.bind(null,o));return n},r.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return r.d(t,"a",t),t},r.o=function(e,t){return  Object.prototype.hasOwnProperty.call(e,t)},r.p="",r(r.s=0)}([function(e,t){alert(11+3)}]);
+```
+
+Quando o código for para produção vamos enviar o bundle minificado, rodando o yarn build.
+
+
+Fim: [https://github.com/tgmarinho/intro-react/tree/aula02-configurando-estrutura](https://github.com/tgmarinho/intro-react/tree/aula02-configurando-estrutura)

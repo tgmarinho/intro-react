@@ -3,6 +3,10 @@ import React, { Component } from "react";
 import TechItem from "./TechItem";
 
 class TechList extends Component {
+  static deaultProps = {
+    newTech: "Digite aqui a tech..."
+  };
+
   state = {
     newTech: "",
     techs: ["Node.JS", "ReactJS", "React Native"]
@@ -36,6 +40,8 @@ class TechList extends Component {
               onDelete={() => this.handleDelete(tech)}
             />
           ))}
+
+          <TechItem />
         </ul>
         <input
           type="text"

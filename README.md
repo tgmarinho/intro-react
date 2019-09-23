@@ -1,10 +1,16 @@
-## Aula 09 - Propriedades do React
+## Aula 10 - Default Props & PropTypes
 
-Vamos ver o conceito mais importante do React, que são as props, props ou propriedades é tudo que passamos para dentro de um componente.
+As defaut props e prop-types ajudam o desenvolvedor não cometer erro de passar tipos inválidos para as propriedades, ou deixar de passar algum valor padrão não obrigatório para um componente ou seu elemento.
 
-Legal falar que um Componente em React é uma função, e que essa função pode ou não receber parâmetros, e esses parametros no componente são as propriedades.
+* Default Props:
+Declarando dentro de classes:
+```
+static deaultProps = {
+  newTech:  "Digite aqui a tech..."
+};
+```
 
-Criamos um novo componente: `src/components/TechItem`:
+Declarando em funções:
 ```
 import React from "react";
 
@@ -19,69 +25,48 @@ function TechItem({ tech, onDelete }) {
   );
 }
 
+TechItem.defaultProps = {
+  tech: "Oculto"
+};
+
 export default TechItem;
 ```
 
-E utilizamos o novo componente no `TechList`:
 
+* PropTypes:
+	
+	```
+	yarn add prop-types
+	```
+Agora adicionar no código:
 ```
-import React, { Component } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 
-import TechItem from "./TechItem";
-
-class TechList extends Component {
-  state = {
-    newTech: "",
-    techs: ["Node.JS", "ReactJS", "React Native"]
-  };
-
-  handleInputChange = e => {
-    this.setState({ newTech: e.target.value });
-  };
-
-  handleSubmit = e => {
-    e.preventDefault();
-    this.setState({
-      techs: [...this.state.techs, this.state.newTech],
-      newTech: ""
-    });
-  };
-
-  handleDelete = tech => {
-    this.setState({ techs: this.state.techs.filter(t => t !== tech) });
-  };
-
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <h1>{this.state.newTech}</h1>
-        <ul>
-          {this.state.techs.map(tech => (
-            <TechItem
-              key={tech}
-              tech={tech}
-              onDelete={() => this.handleDelete(tech)}
-            />
-          ))}
-        </ul>
-        <input
-          type="text"
-          value={this.state.newTech}
-          onChange={this.handleInputChange}
-        />
-        <button type="submit">Enviar</button>
-      </form>
-    );
-  }
+function TechItem({ tech, onDelete }) {
+  return (
+    <li>
+      {tech}
+      <button onClick={onDelete} type="button">
+        Remover
+      </button>
+    </li>
+  );
 }
 
-export default TechList;
+TechItem.defaultProps = {
+  tech: "Oculto"
+};
+
+TechItem.propTypes = {
+  tech: PropTypes.string,
+  onDelete: PropTypes.func.isRequired
+};
+
+export default TechItem;
 
 ```
 
-Algumas observações: O método de deleção de items tem que ficar na classe onde está o estado, e o que podemos fazer é passar como referência a função para o TechItem só chamar.
+Quando um prop é obrigatório passo isRequired, quando não é obrigatório, não informo o isRequired e tenho que declarar no defaultProps, e o browser sempre vai receber um alerta se alguma regra foi descumprida e podemos ajustar no código.
 
-A Key sempre fica no componente pai, raiz da iteração.
-
-
-Fim: [https://github.com/tgmarinho/intro-react/tree/aula09-propriedades-do-react](https://github.com/tgmarinho/intro-react/tree/aula09-propriedades-do-react)
+Fim: [https://github.com/tgmarinho/intro-react/tree/aula10-default-props-e-prop-types](https://github.com/tgmarinho/intro-react/tree/aula10-default-props-e-prop-types)

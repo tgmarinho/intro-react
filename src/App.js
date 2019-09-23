@@ -1,8 +1,10 @@
 import React from "react";
 import "./App.css";
 
-function App(params) {
-  return <h1>Hello Thiago Marinho</h1>;
+import homeoffice from "./assets/images/homeoffice.png";
+
+function App() {
+  return <img src={homeoffice} />;
 }
 
 export default App;

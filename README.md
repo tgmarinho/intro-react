@@ -1,23 +1,100 @@
-## Aula 06 - Class Components
+## Aula 07 - Estado e Imutabilidade
 
-Com React podemos escrever componentes utilizando classes, e é útil para poder definir estados e e adicionar métodos de gerencimento de ciclo de vida que veremos mais pra frente.
+Vamos agora manipular a variável de estado, que declaramos na aula passada, que é a `techs` que tem um array de novas tecnologias.
 
-Criamos uma pasta `src/components` e criamos o arquivo `TechList.js` dentro da nova pasta:
+Podemos percorrer o array e exibir na tela:
+```
+...
+ render() {
+    return (
+      <ul>
+        {this.state.techs.map(tech => (<li key={tech}>{tech}</li>))}
+      </ul>
+    );
+  }
+...
+```
+
+Todavez que fazemos um map ou iteração de listas, precisamos passar um prop `key` em cada item da lista para remover o warning,  essa `key` tem que receber uma propriedade única, geralmente um ID deve ser passado.
+
+Toda vez que o estado da aplicação muda, o método render é executado novamente.
+
+E para atualizar o estado, precisamos utilizar um método: `setState`:
+
+```
+  handleInputChange = e => {
+    this.setState({ newTech: e.target.value });
+  };
+```
+E no input de texto, adicionamos:
+```
+ <input type="text"value={this.state.newTech} onChange={this.handleInputChange} />
+```
+a cada alteração no input, será executado o método handleInputChange que irá chamar o setState atualizando o valor do newTech, e com essa alteração de estado o método render(){..} é executado novamente.
+
+```
+  render() {
+    return (
+      <>
+        <h1>{this.state.newTech}</h1>
+        <ul>
+          {this.state.techs.map(tech => (
+            <li key={tech}>{tech}</li>
+          ))}
+        </ul>
+        <input
+          type="text"
+          value={this.state.newTech}
+          onChange={this.handleInputChange}
+        />
+      </>
+    );
+  }
+```
+
+Observação, coloquei a tag `<>` e `</>`que significa que é um Fragment, isto é, um fragmento de código, uma vez que adionamos uma nova tag `input` no mesmo nível da `ul` e do `h1`, os componenetes precisam um pai, elas não podem ficar "flutuando". E por isso coloamos um Fragment, poderia ser uma div, ou outro elemento que receber filhos, porém a vantagem de criar um Fragment que ele não coloca elemento visual na tela o que atrapalharia na esitilização do projeto e a manutenção do html.
+
+Agora precisamos passar o texto que está em `newTech` para o array de `techs`.
+
+Todo estado no React é imutável, para adicionar um novo item no techs temos que recriar o array, copiando o estado atual e adicionar um novo, para remover é a mesma coisa.
+
 ```
 import React, { Component } from "react";
 
 class TechList extends Component {
   state = {
+    newTech: "",
     techs: ["Node.JS", "ReactJS", "React Native"]
+  };
+
+  handleInputChange = e => {
+    this.setState({ newTech: e.target.value });
+  };
+
+  handleSubmit = e => {
+    e.preventDefault();
+    this.setState({
+      techs: [...this.state.techs, this.state.newTech],
+      newTech: ""
+    });
   };
 
   render() {
     return (
-      <ul>
-        <li>Node.js</li>
-        <li>ReactJS</li>
-        <li>React Native</li>
-      </ul>
+      <form onSubmit={this.handleSubmit}>
+        <h1>{this.state.newTech}</h1>
+        <ul>
+          {this.state.techs.map(tech => (
+            <li key={tech}>{tech}</li>
+          ))}
+        </ul>
+        <input
+          type="text"
+          value={this.state.newTech}
+          onChange={this.handleInputChange}
+        />
+        <button type="submit">Enviar</button>
+      </form>
     );
   }
 }
@@ -25,37 +102,8 @@ class TechList extends Component {
 export default TechList;
 ```
 
-E utilizamos o novo componente no App.js:
+*O estado do React é imutável, ele não se altera, ele é recriado.*
 
-```
-import React from "react";
-import "./App.css";
 
-import TechList from "./components/TechList";
 
-function App() {
-  return <TechList />;
-}
-
-export default App;
-```
-Quando executar o yarn dev para rodar o projeto e abrir o navegador, você verá um erro no console, pedindo para adicionar um plugin no babel, isso ocorre porque no babel não tem suporte a essa nova sintaxe de adicionar o `state` dentro da classe se definir um `constructor`.
-
-Precisamos adicinar um plugin do babel para poder adicionar componentes nas classes com uma sintaxe mais simplificada do React.
-
-```
-yarn add @babel/plugin-proposal-class-properties -D
-```
-
-E adiciono no `babel.config.js`:
-
-```
-module.exports = {
-  presets: ["@babel/preset-env", "@babel/preset-react"],
-  plugins: ["@babel/plugin-proposal-class-properties"]
-};
-```
-
-E agora executano o projeto com yarn dev ele deve funcionar perfeitamente.
-
-Fim: [https://github.com/tgmarinho/intro-react/tree/aula06-class-components](https://github.com/tgmarinho/intro-react/tree/aula06-class-components)
+Fim: [https://github.com/tgmarinho/intro-react/tree/aula07-estado-e-imutabilidade](https://github.com/tgmarinho/intro-react/tree/aula07-estado-e-imutabilidade)

@@ -1,10 +1,10 @@
 import React from "react";
 import "./App.css";
 
-import homeoffice from "./assets/images/homeoffice.png";
+import TechList from "./components/TechList";
 
 function App() {
-  return <img src={homeoffice} />;
+  return <TechList />;
 }
 
 export default App;

@@ -1,62 +1,15 @@
-## Aula 07 - Estado e Imutabilidade
 
-Vamos agora manipular a variável de estado, que declaramos na aula passada, que é a `techs` que tem um array de novas tecnologias.
+## Removendo itens do estado
 
-Podemos percorrer o array e exibir na tela:
-```
-...
- render() {
-    return (
-      <ul>
-        {this.state.techs.map(tech => (<li key={tech}>{tech}</li>))}
-      </ul>
-    );
-  }
-...
-```
-
-Todavez que fazemos um map ou iteração de listas, precisamos passar um prop `key` em cada item da lista para remover o warning,  essa `key` tem que receber uma propriedade única, geralmente um ID deve ser passado.
-
-Toda vez que o estado da aplicação muda, o método render é executado novamente.
-
-E para atualizar o estado, precisamos utilizar um método: `setState`:
+Para remover itens do estado, precisamos recriar um novo estado, para remover items do array, precisamos devolver um novo array sem o elemento que será deletado.
 
 ```
-  handleInputChange = e => {
-    this.setState({ newTech: e.target.value });
-  };
-```
-E no input de texto, adicionamos:
-```
- <input type="text"value={this.state.newTech} onChange={this.handleInputChange} />
-```
-a cada alteração no input, será executado o método handleInputChange que irá chamar o setState atualizando o valor do newTech, e com essa alteração de estado o método render(){..} é executado novamente.
-
-```
-  render() {
-    return (
-      <>
-        <h1>{this.state.newTech}</h1>
-        <ul>
-          {this.state.techs.map(tech => (
-            <li key={tech}>{tech}</li>
-          ))}
-        </ul>
-        <input
-          type="text"
-          value={this.state.newTech}
-          onChange={this.handleInputChange}
-        />
-      </>
-    );
-  }
+handleDelete  =  tech  => {
+	this.setState({ techs:  this.state.techs.filter(t  => t !== tech) });
+};
 ```
 
-Observação, coloquei a tag `<>` e `</>`que significa que é um Fragment, isto é, um fragmento de código, uma vez que adionamos uma nova tag `input` no mesmo nível da `ul` e do `h1`, os componenetes precisam um pai, elas não podem ficar "flutuando". E por isso coloamos um Fragment, poderia ser uma div, ou outro elemento que receber filhos, porém a vantagem de criar um Fragment que ele não coloca elemento visual na tela o que atrapalharia na esitilização do projeto e a manutenção do html.
-
-Agora precisamos passar o texto que está em `newTech` para o array de `techs`.
-
-Todo estado no React é imutável, para adicionar um novo item no techs temos que recriar o array, copiando o estado atual e adicionar um novo, para remover é a mesma coisa.
+Dessa forma recebemos como parametro o id o elemento a ser deletado e percorro todos os elementos filtrando todos que não tem esse id, com isso o filter irá recriar um novo array para dentro de techs apenas com os itens que não tem no id informado.
 
 ```
 import React, { Component } from "react";
@@ -79,13 +32,22 @@ class TechList extends Component {
     });
   };
 
+  handleDelete = tech => {
+    this.setState({ techs: this.state.techs.filter(t => t !== tech) });
+  };
+
   render() {
     return (
       <form onSubmit={this.handleSubmit}>
         <h1>{this.state.newTech}</h1>
         <ul>
           {this.state.techs.map(tech => (
-            <li key={tech}>{tech}</li>
+            <li key={tech}>
+              {tech}
+              <button onClick={() => this.handleDelete(tech)} type="button">
+                Remover
+              </button>
+            </li>
           ))}
         </ul>
         <input
@@ -101,9 +63,6 @@ class TechList extends Component {
 
 export default TechList;
 ```
+*Conceito de imutabilidade é justamente não atribuir diretamente um valor a propriedade de estado, mas sim recriar um novo valor para o estado, considerando o estado atual.*
 
-*O estado do React é imutável, ele não se altera, ele é recriado.*
-
-
-
-Fim: [https://github.com/tgmarinho/intro-react/tree/aula07-estado-e-imutabilidade](https://github.com/tgmarinho/intro-react/tree/aula07-estado-e-imutabilidade)
+Fim: [https://github.com/tgmarinho/intro-react/tree/aula08-removendo-itens-do-estado](https://github.com/tgmarinho/intro-react/tree/aula08-removendo-itens-do-estado)

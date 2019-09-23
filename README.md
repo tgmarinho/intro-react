@@ -1,18 +1,33 @@
+## Aula 09 - Propriedades do React
 
-## Removendo itens do estado
+Vamos ver o conceito mais importante do React, que são as props, props ou propriedades é tudo que passamos para dentro de um componente.
 
-Para remover itens do estado, precisamos recriar um novo estado, para remover items do array, precisamos devolver um novo array sem o elemento que será deletado.
+Legal falar que um Componente em React é uma função, e que essa função pode ou não receber parâmetros, e esses parametros no componente são as propriedades.
 
+Criamos um novo componente: `src/components/TechItem`:
 ```
-handleDelete  =  tech  => {
-	this.setState({ techs:  this.state.techs.filter(t  => t !== tech) });
-};
+import React from "react";
+
+function TechItem({ tech, onDelete }) {
+  return (
+    <li>
+      {tech}
+      <button onClick={onDelete} type="button">
+        Remover
+      </button>
+    </li>
+  );
+}
+
+export default TechItem;
 ```
 
-Dessa forma recebemos como parametro o id o elemento a ser deletado e percorro todos os elementos filtrando todos que não tem esse id, com isso o filter irá recriar um novo array para dentro de techs apenas com os itens que não tem no id informado.
+E utilizamos o novo componente no `TechList`:
 
 ```
 import React, { Component } from "react";
+
+import TechItem from "./TechItem";
 
 class TechList extends Component {
   state = {
@@ -42,12 +57,11 @@ class TechList extends Component {
         <h1>{this.state.newTech}</h1>
         <ul>
           {this.state.techs.map(tech => (
-            <li key={tech}>
-              {tech}
-              <button onClick={() => this.handleDelete(tech)} type="button">
-                Remover
-              </button>
-            </li>
+            <TechItem
+              key={tech}
+              tech={tech}
+              onDelete={() => this.handleDelete(tech)}
+            />
           ))}
         </ul>
         <input
@@ -62,7 +76,12 @@ class TechList extends Component {
 }
 
 export default TechList;
-```
-*Conceito de imutabilidade é justamente não atribuir diretamente um valor a propriedade de estado, mas sim recriar um novo valor para o estado, considerando o estado atual.*
 
-Fim: [https://github.com/tgmarinho/intro-react/tree/aula08-removendo-itens-do-estado](https://github.com/tgmarinho/intro-react/tree/aula08-removendo-itens-do-estado)
+```
+
+Algumas observações: O método de deleção de items tem que ficar na classe onde está o estado, e o que podemos fazer é passar como referência a função para o TechItem só chamar.
+
+A Key sempre fica no componente pai, raiz da iteração.
+
+
+Fim: [https://github.com/tgmarinho/intro-react/tree/aula09-propriedades-do-react](https://github.com/tgmarinho/intro-react/tree/aula09-propriedades-do-react)
